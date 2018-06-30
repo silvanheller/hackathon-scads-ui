@@ -1,20 +1,31 @@
 $(document).ready(function() {
 
-    // http://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript/21210643#21210643
     queryDict = {};
     location.search.substr(1).split("&").forEach(function (item) {
         queryDict[item.split("=")[0]] = item.split("=")[1]
     });
 
+    var actor = "1";
+    if (queryDict.actor !== undefined) {
+        actor = queryDict.actor;
+    }
+
     var religion = "MOS";
     if (queryDict.religion !== undefined) {
         religion = queryDict.religion;
     }
+
     var measure = "5";
     if (queryDict.measure !== undefined) {
         measure = queryDict.measure;
     }
     measure = parseInt(measure);
+
+    $("#actorDropdown")
+        .val(actor)
+        .change(function () {
+            $("#dropdownform").submit();
+        });
 
     $("#religionDropdown")
         .val(religion)
@@ -44,7 +55,7 @@ $(document).ready(function() {
                 for(var i=0; i<lines.length; ++i) {
                     //console.log("Line: " + lines[i]);
                     var fields = lines[i].split(",");
-                    if(fields[1] === religion) {
+                    if(fields[1] === religion && fields[2] === actor) {
                         var value = parseFloat(fields[measure]);
                         data.push([fields[0].toLowerCase(), value]);
                     }
@@ -60,7 +71,7 @@ $(document).ready(function() {
                     },
 
                     title: {
-                        text: $('#measureDropdown>option:selected').text()+' for '+$('#religionDropdown>option:selected').text()+' and arbitrary actorNum'
+                        text: $('#measureDropdown>option:selected').text()+' for '+$('#religionDropdown>option:selected').text()+' and '+$('#actorDropdown>option:selected').text()
                     },
 
                     /*subtitle: {
@@ -82,7 +93,7 @@ $(document).ready(function() {
 
                     series: [{
                         data: data,
-                        name: 'Random data',
+                        name: $('#measureDropdown>option:selected').text()+' for '+$('#religionDropdown>option:selected').text()+' and '+$('#actorDropdown>option:selected').text(),
                         states: {
                             hover: {
                                 color: '#BADA55'
@@ -97,7 +108,7 @@ $(document).ready(function() {
 
             }
         }
-    }
+    };
     rawFile.send(null);
 
 });
