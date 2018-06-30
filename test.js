@@ -10,12 +10,23 @@ $(document).ready(function() {
     if (queryDict.religion !== undefined) {
         religion = queryDict.religion;
     }
+    var measure = "5";
+    if (queryDict.measure !== undefined) {
+        measure = queryDict.measure;
+    }
+    measure = parseInt(measure);
 
-    $("#religionDropdown").val(religion);
+    $("#religionDropdown")
+        .val(religion)
+        .change(function () {
+            $("#dropdownform").submit();
+    });
 
-    $("#religionDropdown").change(function () {
-        $("#dropdownform").submit();
-    })
+    $("#measureDropdown")
+        .val(measure)
+        .change(function () {
+            $("#dropdownform").submit();
+        });
 
     var data = [];
 
@@ -26,16 +37,15 @@ $(document).ready(function() {
     {
         if(rawFile.readyState === 4)
         {
-            if(rawFile.status === 200 || rawFile.status == 0)
+            if(rawFile.status === 200 || rawFile.status === 0)
             {
                 var allLines = rawFile.responseText;
                 var lines = allLines.split("\n");
                 for(var i=0; i<lines.length; ++i) {
                     //console.log("Line: " + lines[i]);
                     var fields = lines[i].split(",");
-                    if(fields[1] == religion) {
-                        // [country, avgAvgTone]
-                        var value = parseFloat(fields[5]);
+                    if(fields[1] === religion) {
+                        var value = parseFloat(fields[measure]);
                         data.push([fields[0].toLowerCase(), value]);
                     }
                 }
@@ -50,7 +60,7 @@ $(document).ready(function() {
                     },
 
                     title: {
-                        text: 'AvgAvgTone for religion='+religion+' and arbitrary actorNum'
+                        text: $('#measureDropdown>option:selected').text()+' for '+$('#religionDropdown>option:selected').text()+' and arbitrary actorNum'
                     },
 
                     /*subtitle: {

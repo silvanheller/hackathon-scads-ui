@@ -1,2 +1,3 @@
 http://jsfiddle.net/gh/get/library/pure/highslide-software/highcharts.com/tree/master/samples/mapdata/custom/world-highres2
 https://stackoverflow.com/questions/14446447/how-to-read-a-local-text-file/14446538#14446538
+https://stackoverflow.com/a/2175757
