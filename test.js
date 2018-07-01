@@ -66,6 +66,8 @@ $(document).ready(function() {
             });
     }
 
+
+
     var data = [];
 
     var rawFile = new XMLHttpRequest();
@@ -159,5 +161,13 @@ $(document).ready(function() {
         }
     };
     rawFile.send(null);
+
+    var windowVal = parseInt(window);
+    if(windowType === "time" && windowVal < 19) {
+        setTimeout(function () {
+            var newWindow = windowVal + 1;
+            location.href = "index.html?actor=" + actor + "&religion=" + religion + "&measure=" + measure + "&windowType=" + windowType + "&window=" + newWindow;
+        }, 2000);
+    }
 
 });
