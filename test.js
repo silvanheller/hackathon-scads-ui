@@ -6,10 +6,12 @@ usedWindowIndex = "1";
 play = "false";
 
 data = [];
-min = 999999;
-max = -999999;
+min = undefined;
+max = undefined;
 chart = undefined;
 playInterval = undefined;
+
+lastLoadedMeasure = undefined;
 
 $(document).ready(function() {
 
@@ -125,7 +127,7 @@ function loadData(fileName) {
         {
             if(rawFile.status === 200 || rawFile.status === 0) {
                 parseCSV(rawFile.responseText);
-                if(chart === undefined) {
+                if(chart === undefined || lastLoadedMeasure !== measure) {
                     initHighchart();
                 } else {
                     chart.series[0].setData(data);
@@ -134,9 +136,12 @@ function loadData(fileName) {
         }
     };
     rawFile.send(null);
+    lastLoadedMeasure = measure;
 }
 
 function parseCSV(allLines) {
+    min = 999999;
+    max = -999999;
     var lines = allLines.split("\n");
     for (var i = 0; i < lines.length; ++i) {
         //console.log("Line: " + lines[i]);
