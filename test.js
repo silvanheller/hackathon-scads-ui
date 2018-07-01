@@ -39,18 +39,30 @@ $(document).ready(function() {
     $("#windowDropdown")
         .val(usedWindowType)
         .change(function () {
-            $("#dropdownform").submit();
+            usedWindowType = $("#windowDropdown").prop("value");
+            if(usedWindowType === "global") {
+                $("#windowSlider").prop("disabled", true).hide();
+                $("#playButton").prop("disabled", true).hide();
+            } else {
+                $("#windowSlider").prop("disabled", false).show();
+                $("#playButton").prop("disabled", false).show();
+            }
+            var fileName = generateFileName();
+            loadData(fileName);
+        });
+
+    $("#windowSlider")
+        .val(usedWindowIndex)
+        .change(function () {
+            usedWindowIndex = $("#windowSlider").prop("value");
+            var fileName = generateFileName();
+            loadData(fileName);
         });
 
     if(usedWindowType === "global") {
         $("#windowSlider").prop("disabled", true).hide();
         $("#playButton").prop("disabled", true).hide();
     } else {
-        $("#windowSlider")
-            .val(usedWindowIndex)
-            .change(function () {
-                $("#dropdownform").submit();
-            });
         if(play === "true") {
             $("#playButton")
                 .val("Stop")
@@ -90,6 +102,7 @@ function generateFileName() {
     } else {
         fileName = "./storage/export_"+usedWindowIndex+".csv"
     }
+    console.log(fileName);
     return fileName;
 }
 
