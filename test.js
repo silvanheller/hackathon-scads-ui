@@ -48,16 +48,31 @@ $(document).ready(function() {
     {
         if(rawFile.readyState === 4)
         {
-            if(rawFile.status === 200 || rawFile.status === 0)
-            {
+            if(rawFile.status === 200 || rawFile.status === 0) {
                 var allLines = rawFile.responseText;
                 var lines = allLines.split("\n");
-                for(var i=0; i<lines.length; ++i) {
+                var min = 999999;
+                var max = -999999;
+                for (var i = 0; i < lines.length; ++i) {
                     //console.log("Line: " + lines[i]);
                     var fields = lines[i].split(",");
-                    if(fields[1] === religion && fields[2] === actor) {
+                    if (fields[1] === religion && fields[2] === actor) {
                         var value = parseFloat(fields[measure]);
                         data.push([fields[0].toLowerCase(), value]);
+                        if (value < min) {
+                            min = value;
+                        }
+                        if (value > max) {
+                            max = value;
+                        }
+                    }
+                }
+                // For Average Golstein and Average Average Tone the 0 should be in the middle of the color scale
+                if (measure === 4 || measure === 5) {
+                    if (max > -min) {
+                        min = -max;
+                    } else {
+                        max = -min;
                     }
                 }
                 console.log("Loaded and parsed CSV file.")
@@ -86,6 +101,8 @@ $(document).ready(function() {
                     },
 
                     colorAxis: {
+                        min: min,
+                        max: max,
                         type: 'linear',
                         minColor: '#ff0000',
                         maxColor: '#00ff00'
