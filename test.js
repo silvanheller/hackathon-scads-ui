@@ -81,8 +81,7 @@ $(document).ready(function() {
                 Highcharts.mapChart('container', {
                     chart: {
                         map: 'custom/world-highres2',
-                        height: 800,
-                        width: 1900
+                        margin: 40
                     },
 
                     title: {
