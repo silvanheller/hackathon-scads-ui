@@ -21,6 +21,11 @@ $(document).ready(function() {
     }
     measure = parseInt(measure);
 
+    var window = "1";
+    if (queryDict.window !== undefined) {
+        window = queryDict.window;
+    }
+
     $("#actorDropdown")
         .val(actor)
         .change(function () {
@@ -39,11 +44,17 @@ $(document).ready(function() {
             $("#dropdownform").submit();
         });
 
+    $("#windowSlider")
+        .val(window)
+        .change(function () {
+            $("#dropdownform").submit();
+        });
+
     var data = [];
 
     var rawFile = new XMLHttpRequest();
-    //country,religionPrefix,actorNumber,count,avgGoldstein,avgAvgTone,sumQuadClass1,sumQuadClass2,sumQuadClass3,sumQuadClass4
-    rawFile.open("GET", "./export.csv", false);
+    //country,religionPrefix,actorNumber,count,avgGoldstein,avgAvgTone,quadClass1Percentage,quadClass2Percentage,quadClass3Percentage,quadClass4Percentage,windowIndex,windowStart
+    rawFile.open("GET", "./storage/export_"+window+".csv", false);
     rawFile.onreadystatechange = function ()
     {
         if(rawFile.readyState === 4)
