@@ -1,6 +1,6 @@
 actor = "1";
 religion = "MOS";
-measure = "5";
+measure = 5;
 usedWindowType = "global";
 usedWindowIndex = "1";
 play = "false";
@@ -12,54 +12,28 @@ chart = undefined;
 
 $(document).ready(function() {
 
-    queryDict = {};
-    location.search.substr(1).split("&").forEach(function (item) {
-        queryDict[item.split("=")[0]] = item.split("=")[1]
-    });
-
-
-    if (queryDict.actor !== undefined) {
-        actor = queryDict.actor;
-    }
-
-
-    if (queryDict.religion !== undefined) {
-        religion = queryDict.religion;
-    }
-
-    if (queryDict.measure !== undefined) {
-        measure = queryDict.measure;
-    }
-    measure = parseInt(measure);
-
-    if (queryDict.usedWindowType !== undefined) {
-        usedWindowType = queryDict.usedWindowType;
-    }
-
-    if (queryDict.usedWindowIndex !== undefined) {
-        usedWindowIndex = queryDict.usedWindowIndex;
-    }
-
-    if (queryDict.play !== undefined) {
-        play = queryDict.play;
-    }
-
     $("#actorDropdown")
         .val(actor)
         .change(function () {
-            $("#dropdownform").submit();
+            actor = $("#actorDropdown").prop("value");
+            var fileName = generateFileName();
+            loadData(fileName);
         });
 
     $("#religionDropdown")
         .val(religion)
         .change(function () {
-            $("#dropdownform").submit();
+            religion = $("#religionDropdown").prop("value");
+            var fileName = generateFileName();
+            loadData(fileName);
     });
 
     $("#measureDropdown")
         .val(measure)
         .change(function () {
-            $("#dropdownform").submit();
+            measure = parseInt($("#measureDropdown").prop("value"));
+            var fileName = generateFileName();
+            loadData(fileName);
         });
 
     $("#windowDropdown")
@@ -92,12 +66,7 @@ $(document).ready(function() {
         }
     }
 
-    var fileName;
-    if(usedWindowType === "global") {
-        fileName = "./storage/export_global.csv";
-    } else {
-        fileName = "./storage/export_"+usedWindowIndex+".csv"
-    }
+    var fileName = generateFileName();
     loadData(fileName);
 
     var usedWindowIndexVal = parseInt(usedWindowIndex);
@@ -113,6 +82,16 @@ $(document).ready(function() {
     },3000);
 
 });
+
+function generateFileName() {
+    var fileName;
+    if(usedWindowType === "global") {
+        fileName = "./storage/export_global.csv";
+    } else {
+        fileName = "./storage/export_"+usedWindowIndex+".csv"
+    }
+    return fileName;
+}
 
 function loadData(fileName) {
     var rawFile = new XMLHttpRequest();
