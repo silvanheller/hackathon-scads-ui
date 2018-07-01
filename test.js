@@ -21,6 +21,11 @@ $(document).ready(function() {
     }
     measure = parseInt(measure);
 
+    var windowType = "global";
+    if (queryDict.windowType !== undefined) {
+        windowType = queryDict.windowType;
+    }
+
     var window = "1";
     if (queryDict.window !== undefined) {
         window = queryDict.window;
@@ -44,17 +49,34 @@ $(document).ready(function() {
             $("#dropdownform").submit();
         });
 
-    $("#windowSlider")
-        .val(window)
+    $("#windowDropdown")
+        .val(windowType)
         .change(function () {
             $("#dropdownform").submit();
         });
+
+    if(windowType === "global") {
+        $("#windowSlider").prop("disabled", true).hide();
+
+    } else {
+        $("#windowSlider")
+            .val(window)
+            .change(function () {
+                $("#dropdownform").submit();
+            });
+    }
 
     var data = [];
 
     var rawFile = new XMLHttpRequest();
     //country,religionPrefix,actorNumber,count,avgGoldstein,avgAvgTone,quadClass1Percentage,quadClass2Percentage,quadClass3Percentage,quadClass4Percentage,windowIndex,windowStart
-    rawFile.open("GET", "./storage/export_"+window+".csv", false);
+    var fileName;
+    if(windowType === "global") {
+        fileName = "./storage/export_global.csv";
+    } else {
+        fileName = "./storage/export_"+window+".csv"
+    }
+    rawFile.open("GET", fileName, false);
     rawFile.onreadystatechange = function ()
     {
         if(rawFile.readyState === 4)
