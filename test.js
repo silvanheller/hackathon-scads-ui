@@ -9,6 +9,7 @@ data = [];
 min = 999999;
 max = -999999;
 chart = undefined;
+playInterval = undefined;
 
 $(document).ready(function() {
 
@@ -59,40 +60,48 @@ $(document).ready(function() {
             loadData(fileName);
         });
 
+    $("#playButton")
+        .click(function () {
+            if(play === "true") {
+                console.log("ho");
+                $("#playButton").val("Play");
+                play = "false";
+            } else {
+                console.log("hui");
+                $("#playButton").val("Stop");
+                usedWindowIndex = "1";
+                $("#windowSlider").val(usedWindowIndex)
+                play = "true";
+
+                playInterval = setInterval(function () {
+                    var usedWindowIndexVal = parseInt(usedWindowIndex);
+                    if(usedWindowIndexVal > 19) {
+                        clearInterval(playInterval);
+                    }
+                    newUsedWindowIndexVal = usedWindowIndexVal+1;
+                    usedWindowIndex = newUsedWindowIndexVal.toString();
+                    $("#windowSlider").val(usedWindowIndex)
+                    var fileName = generateFileName();
+                    loadData(fileName);
+                }, 700);
+            }
+            var fileName = generateFileName();
+            loadData(fileName);
+        });
+
     if(usedWindowType === "global") {
         $("#windowSlider").prop("disabled", true).hide();
         $("#playButton").prop("disabled", true).hide();
     } else {
         if(play === "true") {
-            $("#playButton")
-                .val("Stop")
-                .click(function () {
-                    location.href = "index.html?actor=" + actor + "&religion=" + religion + "&measure=" + measure + "&usedWindowType=" + usedWindowType + "&usedWindowIndex=" + usedWindowIndex + "&play=false";
-                });
+            $("#playButton").val("Stop");
         } else {
-            $("#playButton")
-                .val("Play")
-                .click(function () {
-                    location.href = "index.html?actor=" + actor + "&religion=" + religion + "&measure=" + measure + "&usedWindowType=" + usedWindowType + "&usedWindowIndex=1&play=true";
-                });
+            $("#playButton").val("Play");
         }
     }
 
     var fileName = generateFileName();
     loadData(fileName);
-
-    var usedWindowIndexVal = parseInt(usedWindowIndex);
-    if(play === "true" && usedWindowType === "time" && usedWindowIndexVal < 19) {
-        setTimeout(function () {
-            var newusedWindowIndex = usedWindowIndexVal + 1;
-            location.href = "index.html?actor=" + actor + "&religion=" + religion + "&measure=" + measure + "&usedWindowType=" + usedWindowType + "&usedWindowIndex=" + newusedWindowIndex + "&play=" + play;
-        }, 2000);
-    }
-
-    setTimeout(function () {
-        loadData("./storage/export_2.csv");
-    },3000);
-
 });
 
 function generateFileName() {
