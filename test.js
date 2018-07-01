@@ -31,6 +31,11 @@ $(document).ready(function() {
         window = queryDict.window;
     }
 
+    var play = "false;"
+    if (queryDict.play !== undefined) {
+        play = queryDict.play;
+    }
+
     $("#actorDropdown")
         .val(actor)
         .change(function () {
@@ -57,13 +62,26 @@ $(document).ready(function() {
 
     if(windowType === "global") {
         $("#windowSlider").prop("disabled", true).hide();
-
+        $("#playButton").prop("disabled", true).hide();
     } else {
         $("#windowSlider")
             .val(window)
             .change(function () {
                 $("#dropdownform").submit();
             });
+        if(play === "true") {
+            $("#playButton")
+                .val("Stop")
+                .click(function () {
+                    location.href = "index.html?actor=" + actor + "&religion=" + religion + "&measure=" + measure + "&windowType=" + windowType + "&window=" + window + "&play=false";
+                });
+        } else {
+            $("#playButton")
+                .val("Play")
+                .click(function () {
+                    location.href = "index.html?actor=" + actor + "&religion=" + religion + "&measure=" + measure + "&windowType=" + windowType + "&window=1&play=true";
+                });
+        }
     }
 
 
@@ -163,10 +181,10 @@ $(document).ready(function() {
     rawFile.send(null);
 
     var windowVal = parseInt(window);
-    if(windowType === "time" && windowVal < 19) {
+    if(play === "true" && windowType === "time" && windowVal < 19) {
         setTimeout(function () {
             var newWindow = windowVal + 1;
-            location.href = "index.html?actor=" + actor + "&religion=" + religion + "&measure=" + measure + "&windowType=" + windowType + "&window=" + newWindow;
+            location.href = "index.html?actor=" + actor + "&religion=" + religion + "&measure=" + measure + "&windowType=" + windowType + "&window=" + newWindow + "&play=" + play;
         }, 2000);
     }
 
