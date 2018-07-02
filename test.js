@@ -11,6 +11,8 @@ max = undefined;
 chart = undefined;
 playInterval = undefined;
 
+timeMeasurementHelper = 0;
+
 $(document).ready(function() {
 
     $("#actorDropdown")
@@ -63,11 +65,10 @@ $(document).ready(function() {
     $("#playButton")
         .click(function () {
             if(play === "true") {
-                console.log("ho");
                 $("#playButton").val("Play");
                 play = "false";
+                clearInterval(playInterval);
             } else {
-                console.log("hui");
                 $("#playButton").val("Stop");
                 usedWindowIndex = "1";
                 $("#windowSlider").val(usedWindowIndex)
@@ -111,7 +112,6 @@ function generateFileName() {
     } else {
         fileName = "./storage/export_"+usedWindowIndex+".csv"
     }
-    console.log(fileName);
     return fileName;
 }
 
@@ -138,30 +138,36 @@ function generateChartTitle() {
 }
 
 function loadData(fileName) {
+    console.log("Load " + fileName);
     var rawFile = new XMLHttpRequest();
-    //country,religionPrefix,actorNumber,count,avgGoldstein,avgAvgTone,quadClass1Percentage,quadClass2Percentage,quadClass3Percentage,quadClass4Percentage,windowIndex,windowStart
+    // line = country,religionPrefix,actorNumber,count,avgGoldstein,avgAvgTone,quadClass1Percentage,quadClass2Percentage,quadClass3Percentage,quadClass4Percentage,windowIndex,windowStart
     rawFile.open("GET", fileName, false);
     rawFile.onreadystatechange = function ()
     {
+        console.log("Time for loading file: " + (performance.now()-timeMeasurementHelper) + "ms");
         if(rawFile.readyState === 4)
         {
             if(rawFile.status === 200 || rawFile.status === 0) {
+                timeMeasurementHelper = performance.now();
                 parseCSV(rawFile.responseText);
+                console.log("Time parsing file: " + (performance.now()-timeMeasurementHelper) + "ms");
                 if(chart === undefined) {
                     initHighchart();
                 } else {
                     chart.series[0].setData(data);
                     var chartTitle = generateChartTitle();
-                    chart.series[0].setName(chartTitle)
+                    chart.series[0].setName(chartTitle);
                     chart.setTitle({text: chartTitle});
                     chart.colorAxis[0].update({
                         min: min,
                         max: max
                     });
+                    chart.redraw();
                 }
             }
         }
     };
+    timeMeasurementHelper = performance.now();
     rawFile.send(null);
 }
 
@@ -191,14 +197,13 @@ function parseCSV(allLines) {
             max = -min;
         }
     }
-    console.log("Loaded and parsed CSV file.")
 }
 
 function initHighchart() {
     var chartTitle = generateChartTitle();
     chart = Highcharts.mapChart('container', {
         chart: {
-            map: 'custom/world-highres2',
+            map: 'custom/world',
             margin: 40
         },
 
