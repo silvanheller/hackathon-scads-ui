@@ -2,3 +2,4 @@
 .idea/
 *.iml
 storage/
+!storage/export_*.csv
