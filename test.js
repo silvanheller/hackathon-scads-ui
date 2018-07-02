@@ -11,8 +11,6 @@ max = undefined;
 chart = undefined;
 playInterval = undefined;
 
-lastLoadedMeasure = undefined;
-
 $(document).ready(function() {
 
     $("#actorDropdown")
@@ -149,20 +147,22 @@ function loadData(fileName) {
         {
             if(rawFile.status === 200 || rawFile.status === 0) {
                 parseCSV(rawFile.responseText);
-                if(chart === undefined || lastLoadedMeasure !== measure) {
+                if(chart === undefined) {
                     initHighchart();
-                    // TODO: get rid of need to reinitialize, instead reset min and max after parsing CSV file
                 } else {
                     chart.series[0].setData(data);
                     var chartTitle = generateChartTitle();
                     chart.series[0].setName(chartTitle)
                     chart.setTitle({text: chartTitle});
+                    chart.colorAxis[0].update({
+                        min: min,
+                        max: max
+                    });
                 }
             }
         }
     };
     rawFile.send(null);
-    lastLoadedMeasure = measure;
 }
 
 function parseCSV(allLines) {
