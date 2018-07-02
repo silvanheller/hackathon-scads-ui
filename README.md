@@ -5,7 +5,7 @@
 This repository contains the visualization code of the "Ring Parable" project by Silvan Heller, Ashery Mbilinyi and Lukas Probst.
 
 ## Representative Screenshot
-![Web UI](screenshot?raw=true "Web UI")
+![Web UI](screenshot.png?raw=true "Web UI")
 
 For more information about the project, check out the [stream processing repository](https://github.com/silvanheller/hackathon-scads)
 
