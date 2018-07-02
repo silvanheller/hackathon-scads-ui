@@ -117,6 +117,28 @@ function generateFileName() {
     return fileName;
 }
 
+function generateChartTitle() {
+    var chartTitle = $('#measureDropdown>option:selected').text()+' for '+$('#religionDropdown>option:selected').text()+', '+$('#actorDropdown>option:selected').text();
+    if(usedWindowType === "global") {
+        chartTitle += " and Global";
+    } else {
+        chartTitle += " and ";
+        chartTitle += usedWindowIndex;
+        if(usedWindowIndex.substr(usedWindowIndex.length-1,1) === "1" && usedWindowIndex !== "11") {
+            chartTitle += "st";
+        } else if(usedWindowIndex.substr(usedWindowIndex.length-1,1) === "2" && usedWindowIndex !== "12") {
+            chartTitle += "nd";
+        } else if(usedWindowIndex.substr(usedWindowIndex.length-1,1) === "3") {
+            chartTitle += "rd";
+        } else {
+            chartTitle += "th";
+        }
+        chartTitle += " 10-Day Tumbling";
+    }
+    chartTitle += " Time Window";
+    return chartTitle;
+}
+
 function loadData(fileName) {
     var rawFile = new XMLHttpRequest();
     //country,religionPrefix,actorNumber,count,avgGoldstein,avgAvgTone,quadClass1Percentage,quadClass2Percentage,quadClass3Percentage,quadClass4Percentage,windowIndex,windowStart
@@ -129,8 +151,12 @@ function loadData(fileName) {
                 parseCSV(rawFile.responseText);
                 if(chart === undefined || lastLoadedMeasure !== measure) {
                     initHighchart();
+                    // TODO: get rid of need to reinitialize, instead reset min and max after parsing CSV file
                 } else {
                     chart.series[0].setData(data);
+                    var chartTitle = generateChartTitle();
+                    chart.series[0].setName(chartTitle)
+                    chart.setTitle({text: chartTitle});
                 }
             }
         }
@@ -169,6 +195,7 @@ function parseCSV(allLines) {
 }
 
 function initHighchart() {
+    var chartTitle = generateChartTitle();
     chart = Highcharts.mapChart('container', {
         chart: {
             map: 'custom/world-highres2',
@@ -176,7 +203,7 @@ function initHighchart() {
         },
 
         title: {
-            text: $('#measureDropdown>option:selected').text()+' for '+$('#religionDropdown>option:selected').text()+' and '+$('#actorDropdown>option:selected').text()
+            text: chartTitle
         },
 
         /*subtitle: {
@@ -200,7 +227,7 @@ function initHighchart() {
 
         series: [{
             data: data,
-            name: $('#measureDropdown>option:selected').text()+' for '+$('#religionDropdown>option:selected').text()+' and '+$('#actorDropdown>option:selected').text(),
+            name: chartTitle,
             states: {
                 hover: {
                     color: '#BADA55'
