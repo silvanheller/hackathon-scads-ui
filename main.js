@@ -24,6 +24,7 @@ $(document).ready(function() {
     $("#actorDropdown")
         .val(actor)
         .change(function () {
+            stopPlaying();
             actor = $("#actorDropdown").prop("value");
             var fileName = generateFileName();
             loadData(fileName);
@@ -35,6 +36,7 @@ $(document).ready(function() {
     $("#religionDropdown")
         .val(religion)
         .change(function () {
+            stopPlaying();
             religion = $("#religionDropdown").prop("value");
             var fileName = generateFileName();
             loadData(fileName);
@@ -46,6 +48,7 @@ $(document).ready(function() {
     $("#measureDropdown")
         .val(measure)
         .change(function () {
+            stopPlaying();
             measure = parseInt($("#measureDropdown").prop("value"));
             var fileName = generateFileName();
             loadData(fileName);
@@ -58,6 +61,7 @@ $(document).ready(function() {
         .val(usedWindowType)
         .change(function () {
             usedWindowType = $("#windowDropdown").prop("value");
+            stopPlaying();
             if(usedWindowType === "global") {
                 $("#windowSlider").prop("disabled", true).hide();
                 $("#playButton").prop("disabled", true).hide();
@@ -75,6 +79,7 @@ $(document).ready(function() {
     $("#windowSlider")
         .val(usedWindowIndex)
         .change(function () {
+            stopPlaying();
             usedWindowIndex = $("#windowSlider").prop("value");
             var fileName = generateFileName();
             loadData(fileName);
@@ -86,26 +91,27 @@ $(document).ready(function() {
     $("#playButton")
         .click(function () {
             if(play === "true") {
-                $("#playButton").val("Play");
-                play = "false";
-                clearInterval(playInterval);
-                // TODO: repair stop button
+                stopPlaying();
             } else {
                 $("#playButton").val("Stop");
                 usedWindowIndex = "1";
                 $("#windowSlider").val(usedWindowIndex)
                 play = "true";
 
+                usedWindowIndex = "0";
                 playInterval = setInterval(function () {
                     var usedWindowIndexVal = parseInt(usedWindowIndex);
                     if(usedWindowIndexVal > 19) {
-                        clearInterval(playInterval);
+                        stopPlaying();
+                        usedWindowIndex = "1";
+                        $("#windowSlider").val(usedWindowIndex);
+                    } else {
+                        var newUsedWindowIndexVal = usedWindowIndexVal + 1;
+                        usedWindowIndex = newUsedWindowIndexVal.toString();
+                        $("#windowSlider").val(usedWindowIndex);
+                        var fileName = generateFileName();
+                        loadData(fileName);
                     }
-                    newUsedWindowIndexVal = usedWindowIndexVal+1;
-                    usedWindowIndex = newUsedWindowIndexVal.toString();
-                    $("#windowSlider").val(usedWindowIndex)
-                    var fileName = generateFileName();
-                    loadData(fileName);
                 }, 700);
             }
             var fileName = generateFileName();
@@ -288,4 +294,13 @@ function initHighchart() {
             }
         }]
     });
+}
+
+/**
+ * Stop playing.
+ */
+function stopPlaying() {
+    clearInterval(playInterval);
+    $("#playButton").val("Play");
+    play = "false";
 }
