@@ -154,16 +154,17 @@ function loadData(fileName) {
                 if(chart === undefined) {
                     initHighchart();
                 } else {
-                    chart.series[0].setData(data);
+                    chart.series[0].setData(data, false);
                     var chartTitle = generateChartTitle();
-                    chart.series[0].setName(chartTitle);
+                    chart.series[0].setName(chartTitle, false);
                     chart.setTitle({text: chartTitle});
                     chart.colorAxis[0].update({
                         min: min,
                         max: max
-                    });
+                    }, false);
                     chart.redraw();
                 }
+                //TODO: chart redraw tends to be very slowly and (for any reason) also harm the interval of the automatic play
             }
         }
     };
@@ -172,6 +173,7 @@ function loadData(fileName) {
 }
 
 function parseCSV(allLines) {
+    data = [];
     min = 999999;
     max = -999999;
     var lines = allLines.split("\n");
