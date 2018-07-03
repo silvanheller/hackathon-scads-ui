@@ -1,3 +1,6 @@
+/**
+ * Default values
+ */
 actor = "1";
 religion = "MOS";
 measure = 5;
@@ -15,6 +18,9 @@ timeMeasurementHelper = 0;
 
 $(document).ready(function() {
 
+    /**
+     * Sets actorDropdown to default value and set change function.
+     */
     $("#actorDropdown")
         .val(actor)
         .change(function () {
@@ -23,6 +29,9 @@ $(document).ready(function() {
             loadData(fileName);
         });
 
+    /**
+     * Sets religionDropdown to default value and set change function.
+     */
     $("#religionDropdown")
         .val(religion)
         .change(function () {
@@ -31,6 +40,9 @@ $(document).ready(function() {
             loadData(fileName);
     });
 
+    /**
+     * Sets measureDropdown to default value and set change function.
+     */
     $("#measureDropdown")
         .val(measure)
         .change(function () {
@@ -39,6 +51,9 @@ $(document).ready(function() {
             loadData(fileName);
         });
 
+    /**
+     * Sets windowDropdown to default value and set change function.
+     */
     $("#windowDropdown")
         .val(usedWindowType)
         .change(function () {
@@ -54,6 +69,9 @@ $(document).ready(function() {
             loadData(fileName);
         });
 
+    /**
+     * Sets windowSlider to default value and set change function.
+     */
     $("#windowSlider")
         .val(usedWindowIndex)
         .change(function () {
@@ -62,12 +80,16 @@ $(document).ready(function() {
             loadData(fileName);
         });
 
+    /**
+     * Added play/stop button functionality.
+     */
     $("#playButton")
         .click(function () {
             if(play === "true") {
                 $("#playButton").val("Play");
                 play = "false";
                 clearInterval(playInterval);
+                // TODO: repair stop button
             } else {
                 $("#playButton").val("Stop");
                 usedWindowIndex = "1";
@@ -90,6 +112,9 @@ $(document).ready(function() {
             loadData(fileName);
         });
 
+    /**
+     * Hide windowSlider and playButton if windowType default is global and set proper text for play button if windowType default is not global.
+     */
     if(usedWindowType === "global") {
         $("#windowSlider").prop("disabled", true).hide();
         $("#playButton").prop("disabled", true).hide();
@@ -101,10 +126,17 @@ $(document).ready(function() {
         }
     }
 
+    /**
+     * Create first chart for default values.
+     */
     var fileName = generateFileName();
     loadData(fileName);
 });
 
+/**
+ * Generates file name using the global variables.
+ * @returns {string}
+ */
 function generateFileName() {
     var fileName;
     if(usedWindowType === "global") {
@@ -115,6 +147,10 @@ function generateFileName() {
     return fileName;
 }
 
+/**
+ * Generates chart title using the global variables.
+ * @returns {string}
+ */
 function generateChartTitle() {
     var chartTitle = $('#measureDropdown>option:selected').text()+' for '+$('#religionDropdown>option:selected').text()+', '+$('#actorDropdown>option:selected').text();
     if(usedWindowType === "global") {
@@ -137,10 +173,13 @@ function generateChartTitle() {
     return chartTitle;
 }
 
+/**
+ * Loads CSV file, parses it and updates the chart.
+ * @param fileName CSV file name
+ */
 function loadData(fileName) {
     console.log("Load " + fileName);
     var rawFile = new XMLHttpRequest();
-    // line = country,religionPrefix,actorNumber,count,avgGoldstein,avgAvgTone,quadClass1Percentage,quadClass2Percentage,quadClass3Percentage,quadClass4Percentage,windowIndex,windowStart
     rawFile.open("GET", fileName, false);
     rawFile.onreadystatechange = function ()
     {
@@ -164,7 +203,6 @@ function loadData(fileName) {
                     }, false);
                     chart.redraw();
                 }
-                //TODO: chart redraw tends to be very slowly and (for any reason) also harm the interval of the automatic play
             }
         }
     };
@@ -172,7 +210,12 @@ function loadData(fileName) {
     rawFile.send(null);
 }
 
+/**
+ * Parses the CSV file, calculates min and max and fill the data array.
+ * @param allLines All lines of the CSV file.
+ */
 function parseCSV(allLines) {
+    // line = country,religionPrefix,actorNumber,count,avgGoldstein,avgAvgTone,quadClass1Percentage,quadClass2Percentage,quadClass3Percentage,quadClass4Percentage,windowIndex,windowStart
     data = [];
     min = 999999;
     max = -999999;
@@ -201,6 +244,9 @@ function parseCSV(allLines) {
     }
 }
 
+/**
+ * Initializes chart.
+ */
 function initHighchart() {
     var chartTitle = generateChartTitle();
     chart = Highcharts.mapChart('container', {
@@ -212,10 +258,6 @@ function initHighchart() {
         title: {
             text: chartTitle
         },
-
-        /*subtitle: {
-            text: 'Source map: <a href="http://code.highcharts.com/mapdata/custom/world-highres2.js">World, Miller projection, very high resolution</a>'
-        },*/
 
         mapNavigation: {
             enabled: true,
