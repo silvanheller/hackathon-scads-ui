@@ -9,21 +9,28 @@ body {
     margin: 0;
 }
 
-#dropdowns {
+#header {
     height:7%;
     background-color:#A5D7D2;
     position:relative;
 }
 
-#dropdownform{
-    margin-left: 50px;
+#right{
+    right:20px;
+    position: absolute;               /* 2 */
+    top: 50%;                         /* 3 */
+    transform: translate(0, -50%)
+}
+
+#selectors{
+    left: 20px;
     position: absolute;               /* 2 */
     top: 50%;                         /* 3 */
     transform: translate(0, -50%)
 }
 
 #windowSlider {
-    width:500px;
+    width:300px;
 }
 
 #container {

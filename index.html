@@ -10,8 +10,8 @@
     <script src="./libs/jquery-3.3.1.min.js"></script>
 </head>
 <body>
-    <div id="dropdowns">
-        <form id="dropdownform" action="index.html" method="GET">
+    <div id="header">
+        <div id="selectors">
             Actor:
             <select id="actorDropdown" name="actor">
                 <option value="1">Actor 1</option>
@@ -56,7 +56,10 @@
             </select>
             <input type="range" min="1" max="19" value="1" name="usedWindowIndex" id="windowSlider">
             <input type="button" value="Play" id="playButton">
-        </form>
+        </div>
+        <div id="right">
+            <img src="ringParableLogo.png" alt="Project Ring Parable" height="40"> <img src="dbisLogo.png" alt="DBIS Research Group" height="40" style="margin-left:10px;"> <img src="uniLogo.png" alt="University of Basel" height="40" style="margin-left:10px;">
+        </div>
     </div>
     <div id="container"></div>
     <script src="main.js"></script>
